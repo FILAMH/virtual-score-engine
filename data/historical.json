@@ -1,0 +1,240 @@
+{
+  "version": "1.1.0",
+  "description": "Historical dataset for the Virtual Score Engine. Stores completed virtual football matches. Historical records may contain only final results, or may additionally contain a genuine pre-match market snapshot captured before the match started.",
+  "competition": "FIFA FC 26. Spain Championship",
+
+  "retention": {
+    "defaultHours": 72,
+    "allowOlderData": true
+  },
+
+  "dataPolicy": {
+    "oddsAreOptional": true,
+    "neverReconstructHistoricalOdds": true,
+    "historicalOddsMustBeCapturedBeforeMatch": true
+  },
+
+  "matches": [
+    {
+      "id": "fc26-spain-20260813-2220-barcelona-real-madrid",
+      "competition": "FC 26. Spain Championship",
+      "homeTeam": "Barcelone",
+      "awayTeam": "Real Madrid",
+      "date": "2026-08-13",
+      "time": "22:20",
+      "status": "FINISHED",
+
+      "score": {
+        "home": 3,
+        "away": 2
+      },
+
+      "halftimeScore": {
+        "home": 1,
+        "away": 2
+      },
+
+      "marketSnapshot": null
+    },
+
+    {
+      "id": "fc26-spain-20260813-2200-valencia-elche",
+      "competition": "FC 26. Spain Championship",
+      "homeTeam": "Valencia",
+      "awayTeam": "Elche",
+      "date": "2026-08-13",
+      "time": "22:00",
+      "status": "FINISHED",
+
+      "score": {
+        "home": 0,
+        "away": 1
+      },
+
+      "halftimeScore": {
+        "home": 0,
+        "away": 0
+      },
+
+      "marketSnapshot": null
+    },
+
+    {
+      "id": "fc26-spain-20260813-2320-levante-atletico",
+      "competition": "FIFA FC 26. Spain Championship",
+      "homeTeam": "Levante UD",
+      "awayTeam": "Club Atlético de Madrid",
+      "date": "2026-08-13",
+      "time": "23:20",
+      "status": "FINISHED",
+
+      "score": {
+        "home": null,
+        "away": null
+      },
+
+      "halftimeScore": {
+        "home": null,
+        "away": null
+      },
+
+      "marketSnapshot": {
+        "available": true,
+        "capturedBeforeMatch": true,
+        "capturedAt": "2026-08-13T23:20:00",
+
+        "markets": {
+          "1X2": {
+            "V1": 5.47,
+            "X": 4.55,
+            "V2": 1.448
+          },
+
+          "doubleChance": {
+            "1X": 2.525,
+            "12": 1.13,
+            "2X": 1.085
+          },
+
+          "btts": {
+            "yes": 1.72,
+            "no": 2.125
+          },
+
+          "eachTeam2OrMore": {
+            "yes": 5.78,
+            "no": 1.10
+          },
+
+          "team1Totals": {
+            "over0.5": 1.50,
+            "under0.5": 2.52,
+            "over1.5": 3.65,
+            "under1.5": 1.264
+          },
+
+          "team2Totals": {
+            "over0.5": 1.05,
+            "under0.5": 7.89,
+            "over1.5": 1.496,
+            "under1.5": 2.53,
+            "over2.5": 2.64,
+            "under2.5": 1.46,
+            "over3.5": 5.66,
+            "under3.5": 1.104
+          },
+
+          "matchTotals": {
+            "over1.5": 1.13,
+            "under1.5": 5.14,
+            "over2.5": 1.56,
+            "under2.5": 2.37,
+            "over3.5": 2.50,
+            "under3.5": 1.504,
+            "over4.5": 4.64,
+            "under4.5": 1.155
+          },
+
+          "totalParity": {
+            "yes": 1.915,
+            "no": 1.925
+          },
+
+          "handicap": {
+            "home0": 4.48,
+            "away0": 1.168,
+            "homePlus1": 2.016,
+            "awayMinus1": 1.832,
+            "homePlus1_5": 1.584,
+            "awayMinus1_5": 2.37,
+            "homePlus2": 1.264,
+            "awayMinus2": 3.66,
+            "homePlus2_5": 1.168,
+            "awayMinus2_5": 4.46
+          },
+
+          "halfTimeFullTime": {
+            "V1V1": 8.11,
+            "XV1": 13,
+            "V2V1": 69,
+            "V1X": 17,
+            "XX": 7.19,
+            "V2X": 18,
+            "V1V2": 25,
+            "XV2": 4.68,
+            "V2V2": 1.864
+          },
+
+          "exactScore": {
+            "1-0": 17,
+            "0-0": 21,
+            "0-1": 8.01,
+            "2-0": 34,
+            "1-1": 7.98,
+            "0-2": 7.39,
+            "2-1": 16,
+            "2-2": 15,
+            "1-2": 7.44,
+            "3-1": 49,
+            "3-3": 67,
+            "0-3": 10,
+            "3-2": 46,
+            "1-3": 10,
+            "2-3": 21,
+            "0-4": 19,
+            "1-4": 20,
+            "2-4": 41
+          },
+
+          "nextGoal": {
+            "team1Goal1": 2.992,
+            "team2Goal1": 1.416,
+            "noGoal1": 21,
+            "team1Goal2": 3.488,
+            "team2Goal2": 1.67,
+            "noGoal2": 5.14
+          },
+
+          "teamToScore": {
+            "team1Yes": 1.50,
+            "team1No": 2.52,
+            "team2Yes": 1.05,
+            "team2No": 7.89
+          },
+
+          "goalEachHalf": {
+            "yes": 1.488,
+            "no": 2.552
+          },
+
+          "team1WinAtLeastOneHalf": {
+            "yes": 2.968,
+            "no": 1.375
+          },
+
+          "team2WinAtLeastOneHalf": {
+            "yes": 1.264,
+            "no": 3.66
+          },
+
+          "firstGoalTime": {
+            "minutes1To29": 1.50,
+            "noGoals": 21,
+            "minutes30To90": 2.59
+          },
+
+          "exactTotalGoals": {
+            "0": 21,
+            "1": 5.84,
+            "2": 3.68,
+            "3": 3.52,
+            "4": 4.54,
+            "5": 7.38,
+            "6": 14,
+            "7": 33
+          }
+        }
+      }
+    }
+  ]
+}

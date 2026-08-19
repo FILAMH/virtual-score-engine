@@ -1,0 +1,5 @@
+{
+  "version": "1.0.0",
+  "description": "Prediction history for the Virtual Score Engine. Stores generated Top 3 exact-score predictions and their subsequent evaluation.",
+  "predictions": []
+}

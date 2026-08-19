@@ -1,0 +1,121 @@
+{
+  "version": "1.0.0",
+
+  "system": {
+    "name": "Virtual Score Engine",
+    "mode": "prediction",
+    "simulation": false,
+    "targetTopN": 3
+  },
+
+  "historical": {
+    "defaultWindowHours": 72,
+    "minimumMatchesForCalibration": 20,
+    "minimumMatchesForSimilarity": 5
+  },
+
+  "market": {
+    "vigRemoval": true,
+    "minimumOdds": 1.01,
+    "maximumOdds": 1000
+  },
+
+  "similarity": {
+    "method": "cosine-tanimoto",
+    "cosineWeight": 0.70,
+    "tanimotoWeight": 0.30,
+    "minimumSimilarity": 0.00,
+    "highSimilarity": 0.95
+  },
+
+  "fusion": {
+    "memory": {
+      "center": 0.55,
+      "slope": 10
+    },
+
+    "marketHistorical": {
+      "alpha": 0.70
+    }
+  },
+
+  "regime": {
+    "labels": [
+      "LOW",
+      "NORMAL",
+      "BLOWOUT"
+    ],
+
+    "confidenceThreshold": 0.60,
+
+    "softmaxTemperature": 1.00
+  },
+
+  "direction": {
+    "minimumFavoriteProbability": 0.50,
+    "strongFavoriteProbability": 0.65,
+    "veryStrongFavoriteProbability": 0.75
+  },
+
+  "upset": {
+    "enabled": true,
+    "minimumProbability": 0.00,
+    "maximumAdjustment": 0.30
+  },
+
+  "goals": {
+    "maximumGoalsPerTeam": 10,
+    "minimumLambda": 0.01,
+    "maximumLambda": 6.00
+  },
+
+  "poisson": {
+    "enabled": true
+  },
+
+  "negativeBinomial": {
+    "enabled": true,
+    "dispersion": 1.00
+  },
+
+  "dixonColes": {
+    "enabled": true,
+    "rho": 0.00,
+    "maximumAbsoluteRho": 0.25
+  },
+
+  "ensemble": {
+    "poissonWeight": 0.50,
+    "negativeBinomialWeight": 0.25,
+    "dixonColesWeight": 0.25
+  },
+
+  "prediction": {
+    "topN": 3,
+    "scoreGridMaximum": 10,
+    "requireUniqueScores": true,
+    "sortByProbability": true
+  },
+
+  "evaluation": {
+    "scoreHitCounts": [
+      1,
+      2,
+      3
+    ],
+
+    "winnerEvaluation": true,
+
+    "target": {
+      "matches": 10,
+      "minimumScoreHits": 7,
+      "preferredScoreHits": 8
+    }
+  },
+
+  "calibration": {
+    "enabled": true,
+    "method": "walk-forward",
+    "preventFutureDataLeakage": true
+  }
+}

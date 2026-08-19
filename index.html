@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Le système de Fidel- Analyse et prédiction de scores exacts pour une ligue de football virtuel."
+    >
+
+    <title>Le Système de Fidel</title>
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+    <main class="app-container">
+
+        <!-- =========================================================
+             HEADER
+        ========================================================== -->
+        <header class="app-header">
+
+            <div class="brand">
+                <div class="brand-mark">VS</div>
+
+               <div class="brand-text">
+    <h1>Le Système de Fidel</h1>
+    <p>Système de prédiction de scores exacts</p>
+</div>
+</div>
+
+<div class="system-status" id="system-status">
+    <span class="status-dot"></span>
+    <span id="system-status-text">Prêt</span>
+</div>
+
+            <button
+                type="button"
+                id="open-info-btn"
+                class="button button-secondary vse-info-trigger"
+            >
+                Script &amp; Aide
+            </button>
+
+        </header>
+
+
+        <!-- =========================================================
+             1. HISTORICAL DATA
+        ========================================================== -->
+        <section class="panel" id="historical-panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="section-number">01</span>
+
+                    <div class="section-title">
+                        <h2>Matchs historiques</h2>
+                        <p>
+                            Saisissez les matchs terminés utilisés comme
+                            mémoire historique du moteur de prédiction.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="data-badge" id="history-badge">
+                    0 match
+                </div>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="history-input">
+                    Données historiques
+                </label>
+
+                <textarea
+                    id="history-input"
+                    name="history"
+                    class="data-input"
+                    spellcheck="false"
+                    autocomplete="off"
+                    placeholder="Collez ici les matchs terminés...
+
+Exemple :
+
+FIFA FC 26. Spain Championship
+Team A 2 : 1 Team B
+14.08.2026 (18:20)
+
+Team C 0 : 4 Team D
+14.08.2026 (18:25)
+
+Team E 1 : 1 Team F
+14.08.2026 (18:30)
+
+Le parser extraira automatiquement les équipes,
+les scores, les dates et les heures."
+                ></textarea>
+
+            </div>
+
+
+            <div class="input-footer">
+
+                <div class="information">
+                    <span class="info-icon">i</span>
+
+                    <span>
+                        Les matchs historiques contiennent normalement le
+                        score final, la date et l'heure. Les cotes
+                        précédentes sont facultatives.
+                    </span>
+                </div>
+
+                <button
+                    type="button"
+                    id="validate-history-btn"
+                    class="button button-secondary"
+                >
+                    Valider l'historique
+                </button>
+
+            </div>
+
+
+            <div
+                id="history-validation"
+                class="validation-box hidden"
+                aria-live="polite"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================================================
+             2. CURRENT MATCH
+        ========================================================== -->
+        <section class="panel" id="match-panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="section-number">02</span>
+
+                   <div class="section-title">
+                        <h2>Nouvel événement</h2>
+                        <p>
+                            Collez l'ensemble des données de marché pré-match
+                            de l'événement à prédire.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="data-badge" id="match-badge">
+                    Aucun événement
+                </div>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="match-input">
+                    Données du nouvel événement
+                </label>
+
+                <textarea
+                    id="match-input"
+                    name="match"
+                    class="data-input match-input"
+                    spellcheck="false"
+                    autocomplete="off"
+                    placeholder="Collez ici l'événement pré-match complet...
+
+Exemple :
+
+FIFA FC 26. Spain Championship
+Home Team  : Away Team
+
+V1 : 2.30
+X  : 3.40
+V2 : 2.10
+
+BTTS Oui : 1.72
+BTTS Non : 2.12
+
+TOTAL 2.5 Plus : 1.56
+TOTAL 2.5 Moins : 2.37
+
+Handicap...
+MT-Fin...
+Score Exact...
+Prochain but...
+Nombre exact...
+etc.
+
+Le parser de marchés extraira automatiquement
+les signaux disponibles."
+                ></textarea>
+
+            </div>
+
+
+            <div class="input-footer">
+
+                <div class="information">
+                    <span class="info-icon">i</span>
+
+                    <span>
+                        L'événement doit être pré-match. Le moteur validera
+                        les marchés disponibles avant l'analyse.
+                    </span>
+                </div>
+
+                <button
+                    type="button"
+                    id="validate-match-btn"
+                    class="button button-secondary"
+                >
+                    Valider l'événement
+                </button>
+
+            </div>
+
+
+            <div
+                id="match-validation"
+                class="validation-box hidden"
+                aria-live="polite"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================================================
+             3. ANALYSIS CONTROL
+        ========================================================== -->
+        <section class="analysis-section">
+
+            <button
+                type="button"
+                id="analyze-btn"
+                class="button button-primary button-large"
+                disabled
+            >
+                <span class="button-icon">⚡</span>
+                <span>Lancer l'analyse</span>
+            </button>
+
+            <div
+                id="analysis-status"
+                class="analysis-status"
+                aria-live="polite"
+            >
+                En attente de données historiques valides et d'un nouvel
+                événement valide.
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             4. PREDICTION RESULT
+        ========================================================== -->
+        <section
+            class="panel prediction-panel hidden"
+            id="prediction-panel"
+        >
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="section-number">03</span>
+
+                    <div class="section-title">
+    <h2>Prédiction</h2>
+    <p>
+        Résultat final généré par le pipeline complet de
+        prédiction.
+    </p>
+</div>
+                </div>
+
+                <div
+                    class="prediction-regime"
+                    id="prediction-regime"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <!-- Match identity -->
+            <div class="match-summary">
+
+                <div class="team team-home">
+                    <span class="team-label">DOMICILE</span>
+                    <strong id="result-home-team">—</strong>
+                </div>
+
+                <div class="versus">
+                    VS
+                </div>
+
+                <div class="team team-away">
+                    <span class="team-label">EXTÉRIEUR</span>
+                    <strong id="result-away-team">—</strong>
+                </div>
+
+            </div>
+
+
+            <!-- Direction -->
+            <div class="direction-card">
+
+                <div class="metric-label">
+                    Direction prédite
+                </div>
+
+                <div
+                    class="direction-value"
+                    id="predicted-direction"
+                >
+                    —
+                </div>
+
+                <div
+                    class="direction-explanation"
+                    id="direction-explanation"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 TOP 3
+            ====================================================== -->
+            <div class="top3-container">
+
+                <div class="top3-header">
+                    <h3>Top 3 des scores exacts</h3>
+
+                    <span id="top3-count">
+                        3 sélections
+                    </span>
+                </div>
+
+
+                <div class="top3-grid">
+
+                    <!-- #1 -->
+                    <article
+                        class="score-card score-card-first"
+                        id="prediction-card-1"
+                    >
+
+                        <div class="rank">
+                            #1
+                        </div>
+
+                        <div
+                            class="predicted-score"
+                            id="prediction-score-1"
+                        >
+                            —
+                        </div>
+
+                        <div class="score-probability">
+                            <span>Probabilité du modèle</span>
+
+                            <strong id="prediction-probability-1">
+                                —
+                            </strong>
+                        </div>
+
+                    </article>
+
+
+                    <!-- #2 -->
+                    <article
+                        class="score-card"
+                        id="prediction-card-2"
+                    >
+
+                        <div class="rank">
+                            #2
+                        </div>
+
+                        <div
+                            class="predicted-score"
+                            id="prediction-score-2"
+                        >
+                            —
+                        </div>
+
+                        <div class="score-probability">
+                            <span>Model probability</span>
+
+                            <strong id="prediction-probability-2">
+                                —
+                            </strong>
+                        </div>
+
+                    </article>
+
+
+                    <!-- #3 -->
+                    <article
+                        class="score-card"
+                        id="prediction-card-3"
+                    >
+
+                        <div class="rank">
+                            #3
+                        </div>
+
+                        <div
+                            class="predicted-score"
+                            id="prediction-score-3"
+                        >
+                            —
+                        </div>
+
+                        <div class="score-probability">
+                            <span>Model probability</span>
+
+                            <strong id="prediction-probability-3">
+                                —
+                            </strong>
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 MODEL DIAGNOSTICS
+            ====================================================== -->
+            <div class="diagnostics-grid">
+
+                <div class="diagnostic-card">
+
+                    <span class="diagnostic-label">
+                        Confiance
+                    </span>
+
+                    <strong id="prediction-confidence">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="diagnostic-card">
+
+                    <span class="diagnostic-label">
+                        Similarité historique
+                    </span>
+
+                    <strong id="historical-similarity">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="diagnostic-card">
+
+                    <span class="diagnostic-label">
+                         λ Domicile
+                    </span>
+
+                    <strong id="lambda-home">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="diagnostic-card">
+
+                    <span class="diagnostic-label">
+                        λ Extérieur
+                    </span>
+
+                    <strong id="lambda-away">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="diagnostic-card">
+
+                    <span class="diagnostic-label">
+                         Poids mémoire
+                    </span>
+
+                    <strong id="memory-weight">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="diagnostic-card">
+
+                    <span class="diagnostic-label">
+                        Probabilité de surprise
+                    </span>
+
+                    <strong id="upset-probability">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 ENGINE MESSAGE
+            ====================================================== -->
+            <div
+                class="engine-message"
+                id="engine-message"
+                aria-live="polite"
+            >
+                —
+            </div>
+
+
+            <!-- =====================================================
+                 EVALUATION (RÉSULTAT RÉEL)
+            ====================================================== -->
+            <div class="evaluation-section" id="evaluation-section">
+
+                <div class="evaluation-header">
+                    <h3>Évaluer avec le résultat réel</h3>
+                    <p>
+                        Une fois le match terminé, saisissez le score
+                        réel pour mesurer la performance de cette
+                        prédiction.
+                    </p>
+                </div>
+
+                <div class="evaluation-inputs">
+
+                    <div class="evaluation-field">
+                        <label for="actual-home-score">
+                            Buts domicile
+                        </label>
+                        <input
+                            type="number"
+                            id="actual-home-score"
+                            class="evaluation-number"
+                            min="0"
+                            step="1"
+                            inputmode="numeric"
+                        >
+                    </div>
+
+                    <div class="evaluation-field">
+                        <label for="actual-away-score">
+                            Buts extérieur
+                        </label>
+                        <input
+                            type="number"
+                            id="actual-away-score"
+                            class="evaluation-number"
+                            min="0"
+                            step="1"
+                            inputmode="numeric"
+                        >
+                    </div>
+
+                    <button
+                        type="button"
+                        id="evaluate-btn"
+                        class="button button-secondary"
+                    >
+                        Évaluer
+                    </button>
+
+                </div>
+
+                <div
+                    id="evaluation-result"
+                    class="validation-box hidden"
+                    aria-live="polite"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             5. PERFORMANCE (SÉRIE D'ÉVALUATIONS)
+        ========================================================== -->
+        <section class="panel" id="performance-panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="section-number">04</span>
+
+                    <div class="section-title">
+                        <h2>Performance sur la série</h2>
+                        <p>
+                            Suivi cumulé des évaluations effectuées —
+                            score réel dans le Top 3 et direction
+                            correcte — sur les événements déjà jugés.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="data-badge" id="performance-badge">
+                    0 match évalué
+                </div>
+
+            </div>
+
+            <div class="diagnostics-grid" id="performance-metrics">
+
+                <div class="diagnostic-card">
+                    <span class="diagnostic-label">
+                        Top 3 atteint
+                    </span>
+                    <strong id="performance-top3-rate">—</strong>
+                </div>
+
+                <div class="diagnostic-card">
+                    <span class="diagnostic-label">
+                        Direction correcte
+                    </span>
+                    <strong id="performance-direction-rate">—</strong>
+                </div>
+
+                <div class="diagnostic-card">
+                    <span class="diagnostic-label">
+                        Objectif 7/10
+                    </span>
+                    <strong id="performance-target">—</strong>
+                </div>
+
+            </div>
+
+            <div class="input-footer">
+
+                <div class="information">
+                    <span class="info-icon">i</span>
+                    <span>
+                        Historique des évaluations conservé localement
+                        dans ce navigateur.
+                    </span>
+                </div>
+
+                <button
+                    type="button"
+                    id="reset-performance-btn"
+                    class="button button-secondary"
+                >
+                    Réinitialiser la série
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             6. ERROR AREA
+        ========================================================== -->
+        <div
+            id="global-error"
+            class="global-error hidden"
+            role="alert"
+        ></div>
+
+
+        <!-- =========================================================
+             FOOTER
+        ========================================================== -->
+        <footer class="app-footer">
+
+            <span>
+                Le Système de Fidel
+            </span>
+
+            <span>
+                Analyse pré-match uniquement
+            </span>
+
+        </footer>
+
+    </main>
+
+
+ <!-- =========================================================
+         SCRIPT & AIDE (écran indépendant, sans lien avec le
+         pipeline de prédiction)
+    ========================================================== -->
+    <section id="info-screen" class="vse-info-screen hidden" aria-hidden="true">
+
+        <style>
+            .vse-info-screen {
+                position: fixed;
+                inset: 0;
+                z-index: 999;
+                background: linear-gradient(160deg, #0f1b33 0%, #16305c 55%, #1d4ed8 130%);
+                overflow-y: auto;
+                padding: 20px 0 40px;
+            }
+            .vse-info-inner { width: min(720px, calc(100% - 32px)); margin: 0 auto; }
+            .vse-info-topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+            .vse-back-btn {
+                border: 1px solid rgba(255,255,255,0.25);
+                background: rgba(255,255,255,0.08);
+                color: #fff; border-radius: 10px; padding: 8px 14px;
+                font-size: 13px; font-weight: 700; cursor: pointer;
+            }
+            .vse-back-btn:hover { background: rgba(255,255,255,0.16); }
+            .vse-info-title { color: #fff; font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+            .vse-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+            .vse-tab-btn {
+                flex: 1; border: 1px solid rgba(255,255,255,0.25);
+                background: rgba(255,255,255,0.06); color: #dbe6ff;
+                border-radius: 10px; padding: 10px 12px; font-size: 13px;
+                font-weight: 700; cursor: pointer;
+                transition: background 0.15s ease, color 0.15s ease;
+            }
+            .vse-tab-btn.active { background: #ffffff; color: #16305c; }
+            .vse-tab-panel {
+                display: none; background: rgba(255,255,255,0.06);
+                border: 1px solid rgba(255,255,255,0.18);
+                border-radius: 14px; padding: 16px;
+            }
+            .vse-tab-panel.active { display: block; }
+            .vse-script-box {
+                width: 100%; min-height: 320px; max-height: 480px; resize: vertical;
+                background: #0b1526; color: #cdeaff;
+                border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
+                padding: 12px; font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+                font-size: 11px; line-height: 1.55; white-space: pre; overflow: auto;
+            }
+            .vse-copy-btn {
+                margin-top: 10px; border: 0; background: #2563eb; color: #fff;
+                border-radius: 10px; padding: 10px 16px; font-size: 13px;
+                font-weight: 700; cursor: pointer;
+            }
+            .vse-copy-btn:hover { background: #1d4ed8; }
+            .vse-copy-feedback {
+                margin-left: 10px; color: #bff7c9; font-size: 12px; font-weight: 700;
+                opacity: 0; transition: opacity 0.2s ease;
+            }
+            .vse-copy-feedback.show { opacity: 1; }
+            .vse-aide-content { color: #eaf1ff; font-size: 13px; line-height: 1.7; }
+            .vse-aide-content h4 { color: #ffffff; font-size: 14px; margin: 14px 0 6px; }
+            .vse-aide-content ol, .vse-aide-content ul { margin: 0 0 10px 18px; }
+            .vse-aide-warning {
+                margin-top: 14px; padding: 12px 14px;
+                background: rgba(220, 38, 38, 0.15);
+                border: 1px solid rgba(248, 113, 113, 0.5);
+                border-radius: 10px; color: #ffd9d9; font-size: 12px; line-height: 1.6;
+            }
+        </style>
+
+        <div class="vse-info-inner">
+
+            <div class="vse-info-topbar">
+                <button type="button" id="info-back-btn" class="vse-back-btn">← Retour</button>
+                <span class="vse-info-title">Script &amp; Aide</span>
+            </div>
+
+            <div class="vse-tabs">
+                <button type="button" class="vse-tab-btn active" data-tab="script">Script de transcription</button>
+                <button type="button" class="vse-tab-btn" data-tab="aide">Aide &amp; utilisation</button>
+            </div>
+
+            <div class="vse-tab-panel active" id="tab-script">
+                <textarea id="transcription-script-box" class="vse-script-box" readonly spellcheck="false">Tu es un assistant spécialisé dans la transcription de données de paris footballistiques (pré-match). Tu dois impérativement suivre ce script à la lettre, sans inventer, sans omettre et sans modifier la structure.
+
+================================================================================
+RÈGLES STRICTES ET INVIOLABLES :
+================================================================================
+1. NE PAS AJOUTER de commentaires, d'introduction, de conclusion ou de phrases explicatives.
+2. NE PAS MODIFIER l'ordre des sections, les tirets ou les séparateurs.
+3. Si une cote est absente, écrire "(non spécifié)".
+4. Vérifier les noms des équipes (les écrire exactement comme sur l'image).
+5. Le format de sortie doit être UNIQUEMENT le bloc de texte ci-dessous.
+6. **Le résultat doit être fourni dans un seul bloc de texte prêt à être copié.**
+
+================================================================================
+FORMAT DE SORTIE STANDARD (À RESPECTER EXACTEMENT) :
+================================================================================
+FIFA FC [Numéro]. [Championnat]
+[Équipe Domicile] 0 : 0 [Équipe Extérieur]
+[Date] ([Heure])
+
+================================================================================
+MARCHÉ PRINCIPAL - 1X2
+--------------------------------------------------------------------------------
+V1 ([Équipe Domicile]) : [valeur]
+X                      : [valeur]
+V2 ([Équipe Extérieur]) : [valeur]
+
+Double chance :
+1X : [valeur]
+12 : [valeur]
+2X : [valeur]
+
+Deux équipes vont marquer :
+Oui : [valeur]
+Non : [valeur]
+
+Chaque équipe va marquer (2) Ou Plus :
+Oui : [valeur]
+Non : [valeur]
+
+================================================================================
+TOTAL ÉQUIPE 1 ([Équipe Domicile])
+--------------------------------------------------------------------------------
+(0.5) Plus de : [valeur]
+(0.5) Moins de : [valeur]
+(1.5) Plus de : [valeur]
+(1.5) Moins de : [valeur]
+(2.5) Plus de : [valeur]
+(2.5) Moins de : [valeur]
+(3.5) Plus de : [valeur]
+(3.5) Moins de : [valeur]
+
+TOTAL ÉQUIPE 2 ([Équipe Extérieur])
+--------------------------------------------------------------------------------
+(0.5) Plus de : [valeur]
+(0.5) Moins de : [valeur]
+(1.5) Plus de : [valeur]
+(1.5) Moins de : [valeur]
+(2.5) Plus de : [valeur]
+(2.5) Moins de : [valeur]
+(3.5) Plus de : [valeur]
+(3.5) Moins de : [valeur]
+
+TOTAL (match entier)
+--------------------------------------------------------------------------------
+(1.5) Plus de : [valeur]
+(1.5) Moins de : [valeur]
+(2.5) Plus de : [valeur]
+(2.5) Moins de : [valeur]
+(3.5) Plus de : [valeur]
+(3.5) Moins de : [valeur]
+(4.5) Plus de : [valeur]
+(4.5) Moins de : [valeur]
+(5.5) Plus de : [valeur]
+(5.5) Moins de : [valeur]
+
+TOTAL PAIR
+--------------------------------------------------------------------------------
+Oui : [valeur]
+Non : [valeur]
+
+================================================================================
+HANDICAP
+--------------------------------------------------------------------------------
+1 (-[valeur]) : [valeur]   ([Équipe Domicile] -[valeur])
+2 ([valeur])  : [valeur]   ([Équipe Extérieur] +[valeur])
+1 (-[valeur]) : [valeur]   ([Équipe Domicile] -[valeur])
+2 ([valeur])  : [valeur]   ([Équipe Extérieur] +[valeur])
+1 (0)         : [valeur]   ([Équipe Domicile] handicap 0)
+2 (0)         : [valeur]   ([Équipe Extérieur] handicap 0)
+1 ([valeur])  : [valeur]   ([Équipe Domicile] +[valeur])
+2 (-[valeur]) : [valeur]   ([Équipe Extérieur] -[valeur])
+1 ([valeur])  : [valeur]   ([Équipe Domicile] +[valeur])
+2 (-[valeur]) : [valeur]   ([Équipe Extérieur] -[valeur])
+
+================================================================================
+MT-FIN (Mi-temps / Fin de match)
+--------------------------------------------------------------------------------
+V1/V1 : [valeur]
+X/V1  : [valeur]
+V2/V1 : [valeur]
+V1/X  : [valeur]
+X/X   : [valeur]
+V2/X  : [valeur]
+V1/V2 : [valeur]
+X/V2  : [valeur]
+V2/V2 : [valeur]
+
+================================================================================
+SCORE EXACT
+--------------------------------------------------------------------------------
+1-0 : [valeur]  | 0-0 : [valeur]  | 0-1 : [valeur]
+2-0 : [valeur]  | 1-1 : [valeur]  | 0-2 : [valeur]
+2-1 : [valeur]  | 2-2 : [valeur]  | 1-2 : [valeur]
+3-0 : [valeur]  | 3-3 : [valeur]  | 0-3 : [valeur]
+3-1 : [valeur]  |              | 1-3 : [valeur]
+3-2 : [valeur]  |              | 2-3 : [valeur]
+4-0 : [valeur]  |              | 0-4 : [valeur]
+4-1 : [valeur]  |              | 1-4 : [valeur]
+4-2 : [valeur]  |              | 2-4 : [valeur]
+
+================================================================================
+PROCHAIN BUT
+--------------------------------------------------------------------------------
+Equipe 1 Va Marquer But (1er) : [valeur]
+Equipe 2 Va Marquer But (1er) : [valeur]
+Pas de But (1er)              : [valeur]
+Equipe 1 Va Marquer But (2ème) : [valeur]
+Equipe 2 Va Marquer But (2ème) : [valeur]
+Pas de But (2ème)             : [valeur]
+
+================================================================================
+ÉQUIPE 1 ([Équipe Domicile]) VA MARQUER
+--------------------------------------------------------------------------------
+Oui : [valeur]
+Non : [valeur]
+
+ÉQUIPE 2 ([Équipe Extérieur]) VA MARQUER
+--------------------------------------------------------------------------------
+Oui : [valeur]
+Non : [valeur]
+
+================================================================================
+BUT DANS CHAQUE MI-TEMPS
+--------------------------------------------------------------------------------
+Oui : [valeur]
+Non : [valeur]
+
+ÉQUIPE 1 ([Équipe Domicile]) VA GAGNER AU MOINS UNE MI-TEMPS
+--------------------------------------------------------------------------------
+Oui : [valeur]
+Non : [valeur]
+
+ÉQUIPE 2 ([Équipe Extérieur]) VA GAGNER AU MOINS UNE MI-TEMPS
+--------------------------------------------------------------------------------
+Oui : [valeur]
+Non : [valeur]
+
+MOMENT DU PREMIER BUT
+--------------------------------------------------------------------------------
+1-29 Mins   : [valeur]
+Pas de Buts : [valeur]
+30-90 Mins  : [valeur]
+
+================================================================================
+NOMBRE EXACT
+--------------------------------------------------------------------------------
+(0) : [valeur]
+(1) : [valeur]
+(2) : [valeur]
+(3) : [valeur]
+(4) : [valeur]
+(5) : [valeur]
+(6) : [valeur]
+(7) : [valeur]
+
+================================================================================
+ÉQUIPE 1 ([Équipe Domicile]) VA GAGNER LES DEUX MI-TEMPS
+--------------------------------------------------------------------------------
+(2)
+
+================================================================================
+SCORE DANS CHAQUE MI-TEMPS
+--------------------------------------------------------------------------------
+1 > 2 : [valeur]
+1 = 2 : [valeur]
+1 < 2 : [valeur]
+
+================================================================================
+EXEMPLE CONCRET DE SORTIE ATTENDUE (NE PAS MODIFIER) :
+================================================================================
+FIFA FC 26. Spain Championship
+Rayo Vallecano 0 : 0 Osasuna
+18.08.2026 (02:35)
+
+================================================================================
+MARCHÉ PRINCIPAL - 1X2
+--------------------------------------------------------------------------------
+V1 (Rayo Vallecano) : 1.952
+X                      : 3.9
+V2 (Osasuna) : 3.21
+
+Double chance :
+1X : 1.29
+12 : 1.18
+2X : 1.81
+
+Deux équipes vont marquer :
+Oui : 1.545
+Non : 2.395
+
+Chaque équipe va marquer (2) Ou Plus :
+Oui : 4.7
+Non : 1.15
+
+================================================================================
+TOTAL ÉQUIPE 1 (Rayo Vallecano)
+--------------------------------------------------------------------------------
+(0.5) Plus de : 1.112
+(0.5) Moins de : 5.47
+(1.5) Plus de : 1.82
+(1.5) Moins de : 2.03
+(2.5) Plus de : 3.64
+(2.5) Moins de : 1.27
+
+TOTAL ÉQUIPE 2 (Osasuna)
+--------------------------------------------------------------------------------
+(0.5) Plus de : 1.285
+(0.5) Moins de : 3.52
+(1.5) Plus de : 2.49
+(1.5) Moins de : 1.51
+(2.5) Plus de : 6.41
+(2.5) Moins de : 1.08
+
+TOTAL (match entier)
+--------------------------------------------------------------------------------
+(1.5) Plus de : 1.136
+(1.5) Moins de : 5.03
+(2.5) Plus de : 1.592
+(2.5) Moins de : 2.352
+(3.5) Plus de : 2.545
+(3.5) Moins de : 1.49
+(4.5) Plus de : 4.76
+(4.5) Moins de : 1.15
+
+TOTAL PAIR
+--------------------------------------------------------------------------------
+Oui : 1.915
+Non : 1.925
+
+================================================================================
+HANDICAP
+--------------------------------------------------------------------------------
+1 (-2)  : 6.86   (Rayo Vallecano -2)
+2 (2)   : 1.07   (Osasuna +2)
+1 (-1.5): 3.59   (Rayo Vallecano -1.5)
+2 (1.5) : 1.275  (Osasuna +1.5)
+1 (-1)  : 2.805  (Rayo Vallecano -1)
+2 (1)   : 1.416  (Osasuna +1)
+1 (0)   : 1.5    (Rayo Vallecano handicap 0)
+2 (0)   : 2.52   (Osasuna handicap 0)
+1 (1)   : 1.085  (Rayo Vallecano +1)
+2 (-1)  : 6.29   (Osasuna -1)
+1 (1.5) : 1.056  (Rayo Vallecano +1.5)
+2 (-1.5): 7.52   (Osasuna -1.5)
+
+================================================================================
+MT-FIN (Mi-temps / Fin de match)
+--------------------------------------------------------------------------------
+V1/V1 : 2.59
+X/V1  : 5.93
+V2/V1 : 26
+V1/X  : 15
+X/X   : 6.69
+V2/X  : 14
+V1/V2 : 42
+X/V2  : 8.96
+V2/V2 : 4.22
+
+================================================================================
+SCORE EXACT
+--------------------------------------------------------------------------------
+1-0 : 9.35  | 0-0 : 20  | 0-1 : 12
+2-0 : 10  | 1-1 : 6.98  | 0-2 : 18
+2-1 : 7.84  | 2-2 : 11  | 1-2 : 10
+3-0 : 17  | 3-3 : 48  | 0-3 : 42
+3-1 : 13  |              | 1-3 : 24
+3-2 : 20  |              | 2-3 : 27
+4-0 : 39  |              | 1-4 : 74
+4-1 : 30  |              | 
+4-2 : 47  |              | 
+
+================================================================================
+PROCHAIN BUT
+--------------------------------------------------------------------------------
+Equipe 1 Va Marquer But (1er) : 1.755
+Equipe 2 Va Marquer But (1er) : 2.21
+Pas de But (1er)              : 20
+Equipe 1 Va Marquer But (2ème) : 2.04
+Equipe 2 Va Marquer But (2ème) : 2.55
+Pas de But (2ème)             : 5.03
+
+================================================================================
+ÉQUIPE 1 (Rayo Vallecano) VA MARQUER
+--------------------------------------------------------------------------------
+Oui : 1.112
+Non : 5.47
+
+ÉQUIPE 2 (Osasuna) VA MARQUER
+--------------------------------------------------------------------------------
+Oui : 1.285
+Non : 3.52
+
+================================================================================
+BUT DANS CHAQUE MI-TEMPS
+--------------------------------------------------------------------------------
+Oui : 1.45
+Non : 2.67
+
+ÉQUIPE 1 (Rayo Vallecano) VA GAGNER AU MOINS UNE MI-TEMPS
+--------------------------------------------------------------------------------
+Oui : 1.51
+Non : 2.496
+
+ÉQUIPE 2 (Osasuna) VA GAGNER AU MOINS UNE MI-TEMPS
+--------------------------------------------------------------------------------
+Oui : 2.05
+Non : 1.77
+
+MOMENT DU PREMIER BUT
+--------------------------------------------------------------------------------
+1-29 Mins   : 1.51
+Pas de Buts : 20
+30-90 Mins  : 2.57
+
+================================================================================
+NOMBRE EXACT
+--------------------------------------------------------------------------------
+(0) : 20
+(1) : 5.72
+(2) : 3.64
+(3) : 3.52
+(4) : 4.58
+(5) : 7.52
+(6) : 15
+(7) : 35
+
+================================================================================
+ÉQUIPE 1 (Rayo Vallecano) VA GAGNER LES DEUX MI-TEMPS
+--------------------------------------------------------------------------------
+(2)
+
+================================================================================
+SCORE DANS CHAQUE MI-TEMPS
+--------------------------------------------------------------------------------
+1 > 2 : 2.37
+1 = 2 : 3.76
+1 < 2 : 2.48</textarea>
+
+                <div>
+                    <button type="button" id="copy-script-btn" class="vse-copy-btn">Copier le script</button>
+                    <span id="copy-feedback" class="vse-copy-feedback">Copié ✓</span>
+                </div>
+            </div>
+
+            <div class="vse-tab-panel" id="tab-aide">
+                <div class="vse-aide-content">
+
+                    <h4>Comment utiliser le système</h4>
+                    <ol>
+                        <li>Collez l'historique des matchs terminés récents (fenêtre habituelle : 72h) dans la section « Matchs historiques », au format exact attendu par le parseur.</li>
+                        <li>Collez les données de marché pré-match du nouvel événement dans la section « Nouvel événement ». Le script de transcription (onglet précédent) sert à produire ce texte à partir d'une capture d'écran.</li>
+                        <li>Validez chaque section, puis lancez l'analyse pour obtenir la direction estimée et le Top 3 des scores exacts.</li>
+                        <li>Une fois le match terminé, saisissez le score réel dans la section « Évaluer » pour suivre objectivement la performance du système dans le temps.</li>
+                    </ol>
+
+                    <h4>Ce que mesure le système, honnêtement</h4>
+                    <p>
+                        Sur l'échantillon de matchs évalués à ce jour, le taux de bonne direction (domicile / nul / extérieur) s'est montré sensiblement plus fiable que le taux de score exact retrouvé dans le Top 3. Ces chiffres évoluent à mesure que le système est corrigé et calibré — ils ne constituent ni une garantie ni une prévision fixe.
+                    </p>
+
+                    <div class="vse-aide-warning">
+                        Ce système analyse des cotes de marché et un historique de résultats ; il ne prédit pas l'issue réelle d'un match généré aléatoirement et ne garantit aucun gain. Si ces événements reposent sur un générateur aléatoire (RNG), les résultats passés n'influencent pas les résultats futurs. Utiliser cet outil pour parier de l'argent réel comporte un risque de perte, y compris sur des mises modestes.
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+   <script>
+        (function () {
+            const infoScreen = document.getElementById("info-screen");
+            const openBtn = document.getElementById("open-info-btn");
+            const backBtn = document.getElementById("info-back-btn");
+            const tabButtons = document.querySelectorAll(".vse-tab-btn");
+            const tabPanels = document.querySelectorAll(".vse-tab-panel");
+            const copyBtn = document.getElementById("copy-script-btn");
+            const copyFeedback = document.getElementById("copy-feedback");
+            const scriptBox = document.getElementById("transcription-script-box");
+
+            if (openBtn && infoScreen) {
+                openBtn.addEventListener("click", function () {
+                    infoScreen.classList.remove("hidden");
+                    infoScreen.setAttribute("aria-hidden", "false");
+                });
+            }
+
+            if (backBtn && infoScreen) {
+                backBtn.addEventListener("click", function () {
+                    infoScreen.classList.add("hidden");
+                    infoScreen.setAttribute("aria-hidden", "true");
+                });
+            }
+
+            tabButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    const target = button.getAttribute("data-tab");
+
+                    tabButtons.forEach(function (b) { b.classList.remove("active"); });
+                    tabPanels.forEach(function (panel) { panel.classList.remove("active"); });
+
+                    button.classList.add("active");
+                    document.getElementById("tab-" + target).classList.add("active");
+                });
+            });
+
+            if (copyBtn && scriptBox) {
+                copyBtn.addEventListener("click", function () {
+                    scriptBox.select();
+                    scriptBox.setSelectionRange(0, 999999);
+
+                    navigator.clipboard.writeText(scriptBox.value)
+                        .then(function () {
+                            copyFeedback.classList.add("show");
+                            setTimeout(function () {
+                                copyFeedback.classList.remove("show");
+                            }, 1800);
+                        })
+                        .catch(function () {
+                            document.execCommand("copy");
+                        });
+                });
+            }
+        })();
+    </script>
+
+
+    <!-- =============================================================
+         APPLICATION ENTRY POINT
+         ============================================================= -->
+
+    <script
+        type="module"
+        src="./app.js"
+    ></script>
+
+</body>
+</html>
